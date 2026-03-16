@@ -1,6 +1,5 @@
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from datetime import datetime
 from typing import Optional, List
@@ -10,9 +9,6 @@ from openpyxl.styles import Font, Alignment, PatternFill
 import os
 
 app = FastAPI(title="OYE Hotels API", version="1.0.0")
-
-# Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Setup templates
 templates = Jinja2Templates(directory="templates")
