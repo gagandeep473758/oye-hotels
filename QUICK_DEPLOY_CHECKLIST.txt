@@ -1,0 +1,107 @@
+╔══════════════════════════════════════════════════════════════╗
+║          RENDER.COM DEPLOYMENT - QUICK CHECKLIST            ║
+╚══════════════════════════════════════════════════════════════╝
+
+📦 STEP 1: PUSH TO GITHUB (2 min)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Open Command Prompt in C:\OYE and run:
+
+□ git init
+□ git add .
+□ git commit -m "Initial commit - OYE Hotels app"
+
+Then create repo at: https://github.com/new
+Repo name: oye-hotels
+Make it: Public
+
+Then run (replace YOUR_USERNAME):
+
+□ git remote add origin https://github.com/YOUR_USERNAME/oye-hotels.git
+□ git branch -M main
+□ git push -u origin main
+
+
+🚀 STEP 2: DEPLOY ON RENDER (3 min)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Go to: https://render.com
+
+□ Click "Sign Up" → Use GitHub
+□ Click "New +" → "Web Service"
+□ Find "oye-hotels" repo → "Connect"
+
+Configure:
+┌────────────────────────────────────────────────────────────┐
+│ Name:          oye-hotels                                  │
+│ Runtime:       Python 3                                    │
+│ Build Command: pip install -r requirements.txt            │
+│ Start Command: uvicorn main:app --host 0.0.0.0 --port $PORT │
+│ Instance Type: Free                                        │
+└────────────────────────────────────────────────────────────┘
+
+□ Click "Create Web Service"
+□ Wait 1-2 minutes for deployment
+
+
+✅ STEP 3: GET YOUR URL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Your URL will be: https://oye-hotels.onrender.com
+
+□ Copy this URL
+□ Test it in browser
+□ Make a test booking
+□ Verify everything works
+
+
+📧 STEP 4: SHARE WITH INTERVIEWER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Email Template:
+
+Subject: OYE Hotels - Project Submission
+
+Hi [Name],
+
+Live Demo: https://oye-hotels.onrender.com
+GitHub: https://github.com/YOUR_USERNAME/oye-hotels
+
+Features:
+✅ 18 hotels across Indian cities
+✅ Advanced search & filtering
+✅ Booking with Excel export
+✅ FastAPI + Vanilla JS
+
+Best regards,
+[Your Name]
+
+
+⏱️ TOTAL TIME: 5-6 MINUTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+GitHub: 2 min
+Render: 3 min
+Testing: 1 min
+
+════════════════════════════════════════════════════════════
+
+🆘 TROUBLESHOOTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ Can't find repo on Render?
+   → Settings → GitHub → Configure → Grant access
+
+❌ Build failed?
+   → Check requirements.txt exists
+   → Check main.py committed to GitHub
+
+❌ App loads slowly?
+   → Normal! Free tier takes 10-20s first load
+   → Mention this to interviewer
+
+════════════════════════════════════════════════════════════
+
+For detailed steps: See RENDER_DEPLOYMENT_STEPS.md
+
+YOU'RE READY! 🎉
