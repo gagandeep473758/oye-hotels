@@ -121,6 +121,20 @@
             margin-bottom: 25px;
         }
 
+        .filters-row {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .filters-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+
         .input-group {
             display: flex;
             flex-direction: column;
@@ -291,6 +305,88 @@
             font-size: 0.9rem;
             margin: 0;
             color: #555;
+        }
+
+        /* Compact Amenities Section */
+        .amenities-section {
+            margin: 20px 0;
+            padding: 20px 0;
+            border-top: 1px solid #e1e8ed;
+        }
+
+        .amenities-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .amenities-compact {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .amenity-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: #f8f9fa;
+            border: 2px solid #e1e8ed;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+            color: #555;
+            user-select: none;
+        }
+
+        .amenity-tag:hover {
+            background: #e8f0fe;
+            border-color: #2a5298;
+        }
+
+        .amenity-tag input[type="checkbox"] {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .amenity-tag input[type="checkbox"]:checked + span {
+            font-weight: 600;
+            color: #1e3c72;
+        }
+
+        .amenity-tag:has(input:checked) {
+            background: #e8f0fe;
+            border-color: #2a5298;
+        }
+
+        /* Search Button */
+        .btn-search {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+        }
+
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(30, 60, 114, 0.4);
+        }
+
+        .btn-search:active {
+            transform: translateY(0);
         }
 
         /* Hotels Section */
@@ -827,43 +923,41 @@
         <div class="container">
             <div class="search-card">
                 <h2 class="search-title">Find Your Perfect Stay</h2>
-                <div class="search-grid">
-                    <div class="input-group autocomplete-container">
-                        <label>📍 Location</label>
-                        <input type="text" id="filterLocation" placeholder="Enter city name" autocomplete="off">
-                        <div class="autocomplete-list" id="autocompleteList"></div>
-                    </div>
-                </div>
 
-                <div class="input-group">
-                    <label>💰 Price Range: <span id="priceValue">₹0 - ₹5000</span></label>
-                    <div class="price-range-container">
-                        <input type="range" id="priceRange" class="price-range" min="0" max="5000" value="5000" step="100">
-                    </div>
-                </div>
-
-                <div class="advanced-filters">
+                <div class="filters-row">
                     <div class="input-group">
-                        <label>🎯 Popular Amenities</label>
-                        <div class="filter-checkboxes" id="amenitiesFilters">
-                            {% for amenity in amenities[:8] %}
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="amenity-{{ loop.index }}" value="{{ amenity }}">
-                                <label for="amenity-{{ loop.index }}">{{ amenity }}</label>
-                            </div>
+                        <label>📍 Location</label>
+                        <select id="filterLocation" onchange="applyFilters()">
+                            <option value="">All Cities</option>
+                            {% for city in cities %}
+                            <option value="{{ city }}">{{ city }}</option>
                             {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>💰 Price Range: <span id="priceValue">₹0 - ₹5000</span></label>
+                        <div class="price-range-container">
+                            <input type="range" id="priceRange" class="price-range" min="0" max="5000" value="5000" step="100" oninput="updatePriceDisplay(this.value)">
                         </div>
                     </div>
                 </div>
 
-                <div class="filter-buttons">
-                    <button class="btn btn-primary" onclick="applyFilters()">
-                        🔍 Search Hotels
-                    </button>
-                    <button class="btn btn-secondary" onclick="resetFilters()">
-                        ↺ Reset All
-                    </button>
+                <div class="amenities-section">
+                    <label class="amenities-label">🎯 Amenities</label>
+                    <div class="amenities-compact">
+                        {% for amenity in amenities[:6] %}
+                        <label class="amenity-tag">
+                            <input type="checkbox" value="{{ amenity }}" onchange="applyFilters()">
+                            <span>{{ amenity }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
                 </div>
+
+                <button class="btn btn-search" onclick="applyFilters()">
+                    🔍 Search Hotels
+                </button>
             </div>
         </div>
     </div>
@@ -1009,42 +1103,16 @@
             this.style.background = `linear-gradient(to right, #2a5298 0%, #2a5298 ${percent}%, #e1e8ed ${percent}%, #e1e8ed 100%)`;
         });
 
-        // Autocomplete for cities
-        const locationInput = document.getElementById('filterLocation');
-        const autocompleteList = document.getElementById('autocompleteList');
+        // Price range display update function
+        function updatePriceDisplay(value) {
+            const priceValue = document.getElementById('priceValue');
+            priceValue.textContent = `₹0 - ₹${parseInt(value).toLocaleString()}`;
 
-        locationInput.addEventListener('input', function() {
-            const value = this.value.toLowerCase();
-            autocompleteList.innerHTML = '';
-
-            if (value.length > 0) {
-                const filtered = allCities.filter(city => city.toLowerCase().includes(value));
-                if (filtered.length > 0) {
-                    filtered.forEach(city => {
-                        const item = document.createElement('div');
-                        item.className = 'autocomplete-item';
-                        item.textContent = city;
-                        item.onclick = () => {
-                            locationInput.value = city;
-                            autocompleteList.style.display = 'none';
-                        };
-                        autocompleteList.appendChild(item);
-                    });
-                    autocompleteList.style.display = 'block';
-                } else {
-                    autocompleteList.style.display = 'none';
-                }
-            } else {
-                autocompleteList.style.display = 'none';
-            }
-        });
-
-        // Close autocomplete when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.autocomplete-container')) {
-                autocompleteList.style.display = 'none';
-            }
-        });
+            // Update slider gradient
+            const percentage = (value / 5000) * 100;
+            const priceRange = document.getElementById('priceRange');
+            priceRange.style.background = `linear-gradient(to right, #2a5298 0%, #2a5298 ${percentage}%, #e1e8ed ${percentage}%, #e1e8ed 100%)`;
+        }
 
         function openBookingModal(hotelId, hotelName, hotelPrice, location, image) {
             document.getElementById('hotelId').value = hotelId;
@@ -1101,9 +1169,9 @@
             const maxPrice = document.getElementById('priceRange').value;
             const sortBy = document.getElementById('sortBy').value;
 
-            // Get selected amenities
+            // Get selected amenities from the new compact structure
             const selectedAmenities = [];
-            document.querySelectorAll('#amenitiesFilters input[type="checkbox"]:checked').forEach(cb => {
+            document.querySelectorAll('.amenity-tag input[type="checkbox"]:checked').forEach(cb => {
                 selectedAmenities.push(cb.value);
             });
 
@@ -1132,11 +1200,11 @@
             document.getElementById('filterLocation').value = '';
             document.getElementById('priceRange').value = '5000';
             document.getElementById('sortBy').value = '';
-            priceValue.textContent = '₹0 - ₹5000';
-            priceRange.style.background = 'linear-gradient(to right, #2a5298 0%, #2a5298 100%, #e1e8ed 100%, #e1e8ed 100%)';
+            document.getElementById('priceValue').textContent = '₹0 - ₹5000';
+            document.getElementById('priceRange').style.background = 'linear-gradient(to right, #2a5298 0%, #2a5298 100%, #e1e8ed 100%, #e1e8ed 100%)';
 
             // Uncheck all amenities
-            document.querySelectorAll('#amenitiesFilters input[type="checkbox"]').forEach(cb => {
+            document.querySelectorAll('.amenity-tag input[type="checkbox"]').forEach(cb => {
                 cb.checked = false;
             });
 
